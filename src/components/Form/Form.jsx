@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import PropTypes from 'prop-types';
 import {
   FormStyled,
@@ -5,18 +6,32 @@ import {
   LabelStyled,
   InputStyled,
 } from './Form.styled';
-const Form = (props) => {
-  const handleSubmit = e => {
+import { useState } from 'react';
+const Form = ({ addUser }) => {
+   const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const id = nanoid();
+
+const handleSubmit = e => {
   e.preventDefault();
   const form = e.currentTarget;
-  props.addContact(form.name.value, form.number.value);
+  addUser({ ...{ name, number } });
   form.reset();
-};
+  }
+
+  const handleChange = ({ target: { name, value } }) => {
+    if (name === 'name') {
+      setName(value);
+    } else if (name === 'number') {
+      setNumber(value);
+    }
+  };
     return (
       <FormStyled onSubmit={handleSubmit}>
-        <LabelStyled>
+        <LabelStyled htmlFor={id}>
           <span>Name</span>
           <InputStyled
+            onChange={handleChange}
             type="text"
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -24,9 +39,10 @@ const Form = (props) => {
             required
           />
         </LabelStyled>
-        <LabelStyled>
+        <LabelStyled htmlFor={id}>
           <span>Number</span>
           <InputStyled
+            onChange={handleChange}
             type="tel"
             name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -38,7 +54,8 @@ const Form = (props) => {
       </FormStyled>
     );
   }
-Form.propTypes = {
-  addContact: PropTypes.func.isRequired,
+
+  Form.propTypes = {
+  addUser: PropTypes.func.isRequired,
 };
 export default Form;

@@ -1,53 +1,38 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
 import Form from './Form/Form';
 import List from './List/List';
 import Filter from './Filter/Filter';
-import { useState, useEffect } from 'react';
+import { create, filter } from 'redux/slice';
 export const App = () => {
-  const [contacts, setContacts] = useState(() => JSON.parse(localStorage.getItem("contacts")) ?? []);
-  const [filterValue, setFilterValue] = useState('');
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.toolkit.contacts);
+  const filter = useSelector(state => state.toolkit.filter);
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts))
-  }, [contacts]);
-  
-  const addContact = (name, number) => {
-     const contact = {
-    id: nanoid(),
-    name: name,
-    number: number,
-  };
-    const nameExists = contacts.some(c => c.name.toLowerCase() === contact.name.toLowerCase());
-    if (nameExists) {
-      alert(` ${contact.name} is already in your contacts.`);
-      return;
-    }
-    setContacts((prevState) => [...prevState, contact]);
-  }
-
-   const changeFilter = value => {
-    setFilterValue(value);
-  }
-
-   const handleDelete = id => {
-    setContacts((prevState) => prevState.filter(contact => contact.id !== id));   
-  }
-  
-  const filteredContacts = () => {
-    return contacts.filter((contact) => {
-      return contact.name
-        .toLowerCase()
-        .includes(filterValue.toLowerCase());
-    })
+  const addUser = data => {
+    const newContact = {
+      ...data,
+      id: nanoid(),
+    };
+    if (contacts.filter(contact => contact.name === data.name).length) {
+      alert(data.name + ' is already in contacts!');
+    } else dispatch(create(newContact));
   };
 
-  return (
+  const filteredContacts = () => contacts.filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase()));
+
+  const setFilterValue = data => {
+    dispatch(filter(data));
+  }
+  console.log(filteredContacts())
+  console.log('contacts',contacts)
+    return (
       <>
         <h2>Phonebook</h2>
-        <Form addContact={addContact} />
+        <Form addUser={addUser} />
         <h3>Contacts</h3>
-        <Filter onChange={changeFilter} />
-        <List contacts={filteredContacts()} handleDelete={handleDelete} />
+        <Filter setFilterValue={setFilterValue} />
+        <List contacts={filteredContacts()} />
       </>
     );
   }
