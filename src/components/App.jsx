@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import Form from './Form/Form';
 import List from './List/List';
 import Filter from './Filter/Filter';
-import { create, filter } from 'redux/slice';
+import { create } from 'redux/slice';
 export const App = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.toolkit.contacts);
@@ -24,8 +24,7 @@ export const App = () => {
   const setFilterValue = data => {
     dispatch(filter(data));
   }
-  console.log(filteredContacts())
-  console.log('contacts',contacts)
+
     return (
       <>
         <h2>Phonebook</h2>
