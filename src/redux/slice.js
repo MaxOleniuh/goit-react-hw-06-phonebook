@@ -1,10 +1,10 @@
 const { createSlice } = require('@reduxjs/toolkit');
 
-const slice = createSlice({
+export const slice = createSlice({
   name: 'toolkit',
   initialState: {
     contacts: [
-      { name: 'Max', number: '901-122-4421', id: 'PMGiyvcatsG-XcVJw1bAk' },
+      // { name: 'Max', number: '901-122-4421', id: 'PMGiyvcatsG-XcVJw1bAk' },
     ],
     filter: '',
   },
